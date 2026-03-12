@@ -7,130 +7,90 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row #converts row to dictionary object
     return conn
 
-def get_all_colors(order_column):
-    '''Returns all riddles from the database'''
+def get_all_records(table_name,order_column):
+    '''Returns all records from the database'''
 
     conn = get_db_connection()
 
-    all_colors = conn.execute(
+    all_records = conn.execute(
         f"""
         SELECT *
-        FROM colors
+        FROM {table_name}
         ORDER BY {order_column}
         """).fetchall()  
     
     conn.close()
 
-    return all_colors
+    return all_records
 
 
-def get_one_color(id):
-    '''Returns all riddles from the database'''
+def get_one_record(table_name, id):
+    '''Returns one record  from the database'''
 
     conn = get_db_connection()
 
-    color = conn.execute(
+    record = conn.execute(
         """
         SELECT *
-        FROM colors
+        FROM ?
         where id = ?
-        """,(id,)).fetchone()  
+        """,(table_name, id,)).fetchone()  
     
     conn.close()
 
-    return color
+    return record
 
-def get_colors_name(name):
-    '''Returns riddles queried on the name database'''
 
-    search_color = f"%{name}%"
 
-    conn = get_db_connection()
-
-    color = conn.execute(
-        """
-        SELECT *
-        FROM colors
-        where name like ?
-        """,(search_color,)).fetchall()  
-    
-    conn.close()
-
-    return color
-
-def get_random_color():
-    '''Returns all riddles from the database'''
+def get_random_records(table_name, num):
+    '''Returns multiple random records from the database'''
 
     conn = get_db_connection()
 
-    color = conn.execute(
+    random_records = conn.execute(
        f"""
         SELECT *
-        from colors
+        from {table_name}
         ORDER BY random()
-        limit 1""").fetchone()   
+        limit {num}""").fetchone()   
     
     conn.close()
 
-    return color
+    return random_records
 
-def new_color(form_data):
-    '''Inserts a new riddle into the database
-    Returns the new riddle'''
+def new_record(table_name,form_data):
+    '''Inserts a new record into the database
+    Returns the new record'''
 
 
     conn = get_db_connection()
+
+    # 💻  EDIT THIS ↓ EXECUTE STATEMENT TO MATCH YOUR DATABASE
     conn.execute(
         """
         INSERT INTO 
-        colors (name, red, green, blue) 
+        ? (name, red, green, blue) 
         VALUES (?, ?, ?, ?)""",
-        (form_data['name'], form_data['red'], form_data['green'], form_data['blue'])
+        (table_name,form_data['name'], form_data['red'], form_data['green'], form_data['blue'])
     )
 
     conn.commit()
 
-    new_color = conn.execute(
-        """
+    new_record = conn.execute(
+        f"""
         SELECT * 
-        FROM colors 
+        FROM {table_name} 
         ORDER BY id desc
         LIMIT 1
         """).fetchone()
 
     conn.close()
 
-    return new_color
+    return new_record
 
-
-def update_color(id, form_data):
-    """Updates an existing color in the database by id."""
-    conn = get_db_connection()
-    print(form_data)
-    conn.execute(
-        """
-        UPDATE colors
-        SET name = ?, red = ?, green = ?, blue = ?
-        WHERE id = ?
-        """,
-        (form_data['name'], form_data['red'], form_data['green'], form_data['blue'], id)
-    )
-    conn.commit()
-    updated_color = conn.execute(
-        """
-        SELECT *
-        FROM colors
-        WHERE id = ?
-        """,
-        (id,)
-    ).fetchone()
-    conn.close()
-    return updated_color
 
 
 if __name__=="__main__":
-    for color in get_all_colors():
-        print(color['name'], color['red'], color['green'], color['blue'])
-
+    # testing
     
 

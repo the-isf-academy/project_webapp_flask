@@ -7,34 +7,20 @@ from filters import *
 from forms import *
 import secrets
 
+BASE_URL = "webapp"
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  # Required for CSRF form protection
 
-# setup filters to be accessible in templates
-app.add_template_filter(rgb_to_hex, 'rgb_to_hex')
 
-@app.route("/")
+
+@app.route(f"/{BASE_URL}/")
 def index():
-    color = get_one_color(5)
-
-    name = "stranger"
-
-    return render_template(
-            'index.html', 
-            color=color, 
-            name = name)
-
-@app.route("/random")
-def color_random():
-    color = get_random_color()
-
-    return render_template(
-            'color_random.html', 
-            color=color)
+    return render_template('index.html')
 
 
 if __name__ == '__main__': 
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
 
     

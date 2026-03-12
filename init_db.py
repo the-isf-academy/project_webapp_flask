@@ -1,6 +1,9 @@
-# You may use this file to reset your database
-#   - delete the database.db file
-#   - run init_db.py
+# init_db.py
+# ------
+# run this Python file to create the database.db file
+# open database.db in DB Browser to view database
+# (to reset the database, delete the database.db file, re-run this file)
+# ----------------------
 
 
 import sqlite3
@@ -9,7 +12,7 @@ import sqlite3
 connection = sqlite3.connect('database.db')
 
 # open fortune.sql 
-with open('colors.sql') as file:
+with open('deb_definition.sql') as file:
     connection.executescript(file.read())
 
 # close database
