@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+  
+	<h1>{{heading}}</h1>
+    
+    {% include "swatch.html" %}
+
+    <form method="POST">
+        {{ form.csrf_token }}
+
+        {% for field in form %}
+            {% if field.type != 'CSRFTokenField' and field.type != 'SubmitField' %}
+                <div>
+                        {{ field.label }} {{ field }}
+
+                        {% if field.name == 'red' %}
+                            <span id="redValue">{{ form.red.data }}</span>
+                        {% elif field.name == 'green' %}
+                            <span id="greenValue">{{ form.green.data }}</span>
+                        {% elif field.name == 'blue' %}
+                            <span id="blueValue">{{ form.blue.data  }}</span>
+                        {% endif %}
+
+                    {% if field.errors %}
+                        <ul class="errors">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {{ form.submit }}
+
+    </form>
+
+
+    <script>
+        const redSlider = document.getElementById('red')
+        const greenSlider = document.getElementById('green')
+        const blueSlider = document.getElementById('blue')
+        const swatch = document.getElementsByClassName('color-swatch')[0]
+
+        const redValue = document.getElementById('redValue')
+        const greenValue = document.getElementById('greenValue')
+        const blueValue = document.getElementById('blueValue')
+
+        function hex(num) {
+            const hexnum = parseInt(num).toString(16)
+            return (hexnum.length == 2) ? hexnum : "0" + hexnum
+        }
+        function cssColor(red, green, blue) {
+            return '#' + hex(red) + hex(green) + hex(blue)
+        }
+        function updateSwatch() {
+            const swatchColor = cssColor(redSlider.value, greenSlider.value, blueSlider.value)
+            swatch.style['background-color'] = swatchColor
+                redValue.textContent = redSlider.value
+                greenValue.textContent = greenSlider.value
+                blueValue.textContent = blueSlider.value
+        }
+        updateSwatch()
+
+
+        redSlider.addEventListener('input', updateSwatch)
+        greenSlider.addEventListener('input', updateSwatch)
+        blueSlider.addEventListener('input', updateSwatch)
+        updateSwatch()
+
+	  </script>
+
+{% endblock %}

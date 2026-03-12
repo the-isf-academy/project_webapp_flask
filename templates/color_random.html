@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1>Random color</h1>
+  <p>
+    Do you like it? If not, 
+    <a href="{{ url_for('color_random') }}">choose another</a>.
+  </p>
+
+    {% include "swatch.html" %}
+    
+{% endblock %}
+
